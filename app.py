@@ -1,15 +1,21 @@
 from flask import Flask, request, render_template
 import pickle
+import os
 
 app = Flask(__name__)
 
-# Load both models
-linear_model = pickle.load(open("linear.pkl", "rb"))
-rf_model = pickle.load(open("rf.pkl", "rb"))
+# Load both models safely
+with open("linear.pkl", "rb") as f:
+    linear_model = pickle.load(f)
+
+with open("rf.pkl", "rb") as f:
+    rf_model = pickle.load(f)
+
 
 @app.route("/")
 def home():
     return render_template("index.html")
+
 
 @app.route("/predict", methods=["POST"])
 def predict():
@@ -29,7 +35,7 @@ def predict():
             prediction = rf_model.predict([[hours, attendance, previous, sleep]])
             model_used = "Random Forest"
 
-        # Clamp prediction (0–100 realistic range)
+        # Clamp prediction (0–100 range)
         pred_value = max(0, min(100, prediction[0]))
 
         return render_template(
@@ -44,5 +50,8 @@ def predict():
             prediction="Invalid input! Please enter valid numbers."
         )
 
+
+# ✅ Important for deployment
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))  # Render provides PORT
+    app.run(host="0.0.0.0", port=port)
