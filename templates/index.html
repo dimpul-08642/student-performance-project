@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Performance Predictor</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 30px;
+            width: 350px;
+            box-shadow: 0px 10px 30px rgba(0,0,0,0.3);
+            animation: float 3s ease-in-out infinite;
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: scale(1.03);
+        }
+
+        h2 {
+            text-align: center;
+            color: white;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #ff7eb3;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #ff4f91;
+            transform: scale(1.05);
+        }
+
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 10px;
+            background: rgba(0,255,150,0.2);
+            color: white;
+            text-align: center;
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0px); }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+
+        <h2>🎓 Predictor</h2>
+
+        <form action="/predict" method="post">
+
+            <input type="number" name="hours" placeholder="📚 Study Hours" required>
+            <input type="number" name="attendance" placeholder="📅 Attendance" required>
+            <input type="number" name="previous" placeholder="📊 Previous Score" required>
+            <input type="number" name="sleep" placeholder="😴 Sleep Hours" required>
+
+            <select name="model">
+                <option value="linear">Linear Regression</option>
+                <option value="rf">Random Forest</option>
+            </select>
+
+            <button type="submit">Predict</button>
+
+        </form>
+
+        {% if prediction %}
+        <div class="result">
+            <h3>📈 Score: {{ prediction }}</h3>
+            <p>Model: {{ model_used }}</p>
+        </div>
+        {% endif %}
+
+    </div>
+
+</body>
+</html>
